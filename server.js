@@ -3,7 +3,7 @@ var app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-const SERVER_PORT = 3000;
+const SERVER_PORT = 21801;
 
 // Serve all pages from "content"
 app.use(express.static('content/'));
@@ -29,6 +29,6 @@ io.on('connection', (socket) => {
 });
 
 // listen for connections
-http.listen(SERVER_PORT, () => {
+http.listen(SERVER_PORT, "127.0.0.1", () => {
     console.log(`Listening on localhost:${SERVER_PORT}`)
 });
