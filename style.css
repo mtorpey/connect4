@@ -1,0 +1,29 @@
+table {
+    background-color: blue;
+    border-radius: 2%;
+    border-spacing: 4pt;
+}
+
+td {
+    border: 1px solid;
+    height: 20pt;
+    width: 20pt;
+    border-radius: 50%;
+}
+
+td.empty {
+    background-color: midnightblue;
+}
+
+td.highlight {
+    background-color: royalblue;
+}
+
+td.p0 {
+    background-color: red;
+}
+
+td.p1 {
+    background-color: yellow;
+}
+
