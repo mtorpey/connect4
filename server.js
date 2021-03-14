@@ -17,9 +17,9 @@ io.on('connection', (socket) => {
         console.log('updated model from client:');
         console.log(model);
         setTimeout(function() {
-            socket.emit("updated_model", model);
+            io.emit("updated_model", model);
             //socket.broadcast.emit("server announce", "You are the others");
-        }, 1000);
+        }, 0);
     });
 
     // Client disconnects

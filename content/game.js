@@ -7,7 +7,15 @@ class Model {
     currentPlayer;
     winner;
 
-    constructor() {
+    constructor(obj) {
+        if (obj) {
+            Object.assign(this, obj);
+        } else {
+            this.setupNewGame();
+        }
+    }
+
+    setupNewGame() {
         this.grid = new Array(GAME_HEIGHT);
         for (let r = 0; r < GAME_HEIGHT; r++) {
             this.grid[r] = new Array(GAME_WIDTH);
@@ -16,10 +24,11 @@ class Model {
             }
         }
         this.currentPlayer = 0;
+        this.winner = null;
     }
 
     playPiece(col) {
-        if (this.winner != undefined) {
+        if (this.winner != null) {
             return;
         }
         // Put a piece in the given column
@@ -82,15 +91,11 @@ class Model {
 
 var model = new Model();
 
-window.onload = function() {
-    displayGame(model);
-}
-
 function displayGame(model) {
     let div = document.createElement("div");
     div.id = "gameDiv";
     let playString;
-    if (model.winner === undefined) {
+    if (model.winner === null) {
         playString = ((model.currentPlayer === 0) ? "Red" : "Yellow") + " to play";
     } else {
         playString = ((model.winner === 0) ? "Red" : "Yellow") + " wins!";
@@ -131,6 +136,7 @@ function displayGame(model) {
 let clickCell = function(event) {
     model.playPiece(event.target.col);
     displayGame(model);
+    sendUpdatedModel();
 }
 
 let mouseOverCell = function(event) {
@@ -157,9 +163,31 @@ let mouseLeaveCell = function(event) {
     }
 }
 
-let changeTitle = function() {
-    let str = prompt("What's your name?");
-    document.getElementById("clickable_title").innerHTML = str;
+window.onload = function() {
+    displayGame(model);
+    showApple();
 }
 
-document.getElementById("clickable_title").onclick = changeTitle;
+//
+// SERVER SOCKETS for multi-client play
+//
+var socket = io();
+
+function showApple() {
+    var apple = document.getElementById("apple");
+    apple.innerHTML = "Loaded successfully";
+    //apple.addEventListener("click", changeTitle);
+}
+
+let sendUpdatedModel = function() {
+    apple.innerHTML = "Sent model...";
+    socket.emit("updated_model", model);
+}
+
+var nr_updates = 0;
+
+socket.on("updated_model", (newModel) => {
+    apple.innerHTML = "Server sent model " + (++nr_updates);
+    model = new Model(newModel);
+    displayGame(model);
+});
